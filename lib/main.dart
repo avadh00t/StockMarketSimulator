@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_market_simulator/screens/mainPage/mainPageBackground/mainPageBackground.dart';
+import 'package:stock_market_simulator/screens/mainPage/mainPageBackground/main_page_background.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

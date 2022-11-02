@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_market_simulator/screens/mainPageScreens/transactions.dart';
-import 'package:stock_market_simulator/screens/mainPageScreens/watchlist.dart';
-
-import '../../mainPageScreens/portfolio.dart';
+import '../mainPageScreens/portfolio.dart';
+import '../mainPageScreens/transactions.dart';
+import '../mainPageScreens/watchlist.dart';
 
 class MainPageBackground extends StatefulWidget {
   const MainPageBackground({Key? key}) : super(key: key);
@@ -16,9 +14,9 @@ class _MainPageBackgroundState extends State<MainPageBackground> {
 
   int currentIndex = 0;
   final screens = [
-    Watchlist(),
-    Portfolio(),
-    Transactions()
+    const Watchlist(),
+    const Portfolio(),
+    const Transactions()
   ];
 
   @override
