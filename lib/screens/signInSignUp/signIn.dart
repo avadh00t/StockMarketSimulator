@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_market_simulator/screens/mainPage/mainPageBackground/main_page_background.dart';
+import 'package:stock_market_simulator/screens/signInSignUp/signUp.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -9,6 +12,9 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  bool isLoading = false;
+  final emailController = TextEditingController();
+  final passWordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +43,14 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   TextField(
+                    controller: emailController,
                     style: TextStyle(
                       color: Colors.white,
                     ),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Color(0xffff9d0828),
-                      hintText: 'Enter UserName',
+                      hintText: 'Enter Email',
                       hintStyle: TextStyle(
                         color: Colors.white,
                       ),
@@ -54,6 +61,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   SizedBox(height: 15,),
                   TextField(
+                    controller: passWordController,
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -71,13 +79,43 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   SizedBox(height: 15,),
-                  ElevatedButton(onPressed: (){}, child: Text('Sign In', style: TextStyle(fontWeight: FontWeight.bold),)),
+                  isLoading? CircularProgressIndicator() : ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        if(emailController.text.isEmpty || passWordController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please Enter all fields')));
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                        try {
+                          await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.trim(), password: passWordController.text.trim());
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => MainPageBackground()));
+                        } catch(e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                        } finally {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                      },
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                  ),
                   SizedBox(height: 15,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('Dont Have Account? '),
-                      TextButton(onPressed: (){}, child: Text('SignUn'))
+                      TextButton(onPressed: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUp()));
+                      }, child: Text('SignUp'))
                     ],
                   ),
                 ],

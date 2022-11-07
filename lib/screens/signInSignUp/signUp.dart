@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_market_simulator/screens/signInSignUp/signIn.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -8,6 +11,13 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+
+  bool isLoading = false;
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passWordController = TextEditingController();
+  final passWordControllerChecker = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,24 +49,7 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 children: [
                   TextField(
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xffff9d0828),
-                      hintText: 'Enter UserName',
-                      hintStyle: TextStyle(
-                        color: Colors.white,
-
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15,),
-                  TextField(
+                    controller: emailController,
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -74,6 +67,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 15,),
                   TextField(
+                    controller: passWordController,
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -91,6 +85,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 15,),
                   TextField(
+                    controller: passWordControllerChecker,
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -107,13 +102,55 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   SizedBox(height: 15,),
-                  ElevatedButton(onPressed: (){}, child: Text('Sign Up', style: TextStyle(fontWeight: FontWeight.bold),)),
+                  isLoading? CircularProgressIndicator() : ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        if(emailController.text.isEmpty || passWordController.text.isEmpty || passWordControllerChecker.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please Enter all Fields')));
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                        if(passWordController.text != passWordControllerChecker.text) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Password\'s do not match')));
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                       try {
+                         await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passWordController.text.trim()).then((value) {
+                           FirebaseFirestore.instance.collection(value.user!.email.toString()).doc('Funds').set({"Initial funds" : 500000});
+                         });
+                         setState(() {
+                           isLoading = false;
+                         });
+                         Navigator.of(context).pop(MaterialPageRoute(builder: (context) => SignIn()));
+                       }
+                        catch(e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                        }
+                        finally {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                      },
+                      child: Text('Sign Up', style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                  ),
                   SizedBox(height: 15,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('Have An Account? '),
-                      TextButton(onPressed: (){}, child: Text('SignIn'))
+                      TextButton(
+                          onPressed: (){
+                            Navigator.of(context).pop(MaterialPageRoute(builder: (context) => SignIn()));
+                          },
+                          child: Text('SignIn')
+                      ),
                     ],
                   ),
                 ],

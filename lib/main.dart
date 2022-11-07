@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_market_simulator/screens/mainPage/mainPageBackground/main_page_background.dart';
+import 'package:stock_market_simulator/screens/signInSignUp/signIn.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -42,6 +43,6 @@ Future<void> main() async {
     //   'SignUp': (context) => SignUp(),
     //   'SignIn': (context) => SignIn(),
     // },
-    home: MainPageBackground(),
+    home: const SignIn(),
   ));
 }

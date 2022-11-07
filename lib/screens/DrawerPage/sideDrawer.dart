@@ -1,5 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_market_simulator/screens/mainPage/mainPageBackground/main_page_background.dart';
+import 'package:stock_market_simulator/screens/signInSignUp/signIn.dart';
+import 'package:stock_market_simulator/screens/userProfile/user_profile.dart';
 
 class SideDrawer extends StatelessWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -21,8 +24,8 @@ class SideDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            accountName: Text('hello worlds'),
-            accountEmail: Text('hello worlds'),
+            accountName: Text(FirebaseAuth.instance.currentUser!.uid),
+            accountEmail: Text(FirebaseAuth.instance.currentUser!.email!),
             decoration: BoxDecoration(
               color: Colors.transparent,
               image: DecorationImage(
@@ -44,7 +47,9 @@ class SideDrawer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            onTap: (){},
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserProfile()));
+            },
           ),
           ListTile(
             leading: Icon(
@@ -57,7 +62,9 @@ class SideDrawer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            onTap: (){},
+            onTap: (){
+              Navigator.of(context).pop(MaterialPageRoute(builder: (context) => MainPageBackground()));
+            },
           ),
           ListTile(
             leading: Icon(
@@ -70,7 +77,9 @@ class SideDrawer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            onTap: (){},
+            onTap: (){
+              Navigator.of(context).pop(MaterialPageRoute(builder: (context) => MainPageBackground()));
+            },
           ),
           ListTile(
             leading: Icon(
@@ -83,7 +92,9 @@ class SideDrawer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            onTap: (){},
+            onTap: (){
+              Navigator.of(context).pop(MaterialPageRoute(builder: (context) => MainPageBackground()));
+            },
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -100,7 +111,10 @@ class SideDrawer extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              onTap: (){},
+              onTap: (){
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context).pop(MaterialPageRoute(builder: (context) => SignIn()));
+              },
             ),
           )
         ],

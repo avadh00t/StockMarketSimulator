@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_market_simulator/services/apiCalls/api_calls.dart';
 
@@ -44,11 +46,9 @@ class MySearch extends SearchDelegate {
         }
         if(snapshot.hasData) {
           List<dynamic> stocks = snapshot.data;
-          for(int i=0; i<stocks.length; i++) {
-            stockNames.add(stocks[i]['name']);
-          }
-          final suggestions = stockNames.where((stock) {
-            final stockLower = stock.toLowerCase();
+
+          final dynamic suggestions = stocks.where((stock) {
+            final stockLower = stock['name'].toLowerCase();
             final queryLower = query.toLowerCase();
             return stockLower.startsWith(queryLower);
           }).toList();
@@ -59,17 +59,25 @@ class MySearch extends SearchDelegate {
     );
   }
 
-  Widget buildSuggestionsSuccess (List<String> stockList) {
+  Widget buildSuggestionsSuccess (List<dynamic> stockList) {
+    bool isLoading = false;
     return ListView.builder(
       itemCount: stockList.length,
       itemBuilder: (context, index) {
         return Card(
           child: ListTile(
-            leading: Text('NSE'),
-            title: Text(stockList[index]),
-            trailing: ElevatedButton(
+            leading: Text(stockList[index]['symbol']),
+            title: Text(stockList[index]['name']),
+            trailing: isLoading? CircularProgressIndicator():ElevatedButton(
               child: Text('Add'),
-              onPressed: (){},
+              onPressed: () async {
+                isLoading = true;
+                FirebaseFirestore.instance.collection(FirebaseAuth.instance.currentUser!.email.toString()).add(
+                    {"WatchList" : stockList[index]['name'], "Symbol" : stockList[index]['symbol']}
+                );
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Stock added to WatchList')));
+                isLoading = false;
+              },
             ),
           ),
         );

@@ -21,7 +21,7 @@ class APICalls {
       String jsonString = response.body;
       var data = jsonDecode(jsonString);
       print(data);
-      stockPrice = data;
+      stockPrice = data['price'];
       print(stockPrice);
     }
     return stockPrice;

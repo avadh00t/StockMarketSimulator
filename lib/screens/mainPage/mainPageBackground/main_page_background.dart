@@ -18,7 +18,7 @@ class _MainPageBackgroundState extends State<MainPageBackground> {
     const Portfolio(),
     const Transactions()
   ];
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
