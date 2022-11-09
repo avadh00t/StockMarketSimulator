@@ -24,7 +24,7 @@ class SideDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            accountName: Text(FirebaseAuth.instance.currentUser!.uid),
+            accountName: Text('hello'),
             accountEmail: Text(FirebaseAuth.instance.currentUser!.email!),
             decoration: BoxDecoration(
               color: Colors.transparent,
