@@ -62,6 +62,7 @@ class _SignInState extends State<SignIn> {
                   SizedBox(height: 15,),
                   TextField(
                     controller: passWordController,
+                    obscureText: true,
                     style: TextStyle(
                       color: Colors.white,
                     ),

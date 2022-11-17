@@ -58,6 +58,10 @@ class _PortfolioState extends State<Portfolio> {
                         ),
                       ],
                     ),
+                    trailing: ElevatedButton(
+                      child: Text('Sell'),
+                      onPressed: () {},
+                    ),
                   ),
                 );
               }
